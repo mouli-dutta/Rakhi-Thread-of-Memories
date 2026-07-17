@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Happy Raksha Bandhan — A Bond That Never Fades</title>
+<meta name="description" content="An interactive Raksha Bandhan surprise, made with love.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Preloader: everything is ready before the first scene appears -->
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <span class="preloader-moon" aria-hidden="true"></span>
+    <p>Preparing something special…</p>
+  </div>
+</div>
+
+<!-- Light-bloom flash between scenes -->
+<div class="transition-flash" id="transitionFlash" aria-hidden="true"></div>
+
+<!-- Ambient canvas backgrounds -->
+<canvas id="bg-particles" aria-hidden="true"></canvas>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- The living thread that runs through the whole page -->
+<svg class="thread-line" id="threadLine" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+  <path id="threadPath" d="M 50 0 L 50 100" />
+</svg>
+
+<!-- Progress dots -->
+<nav class="section-nav" id="sectionNav" aria-label="Section navigation">
+  <button data-target="hero" class="nav-dot active" aria-label="Landing"></button>
+  <button data-target="tie" class="nav-dot" aria-label="Tie the Rakhi"></button>
+  <button data-target="ceremony" class="nav-dot" aria-label="Ceremony"></button>
+  <button data-target="stars" class="nav-dot" aria-label="Starry Memories"></button>
+  <button data-target="grateful" class="nav-dot" aria-label="Reasons I'm Grateful"></button>
+  <button data-target="letter" class="nav-dot" aria-label="Handwritten Letter"></button>
+  <button data-target="finale" class="nav-dot" aria-label="Final Celebration"></button>
+</nav>
+
+<!-- Prev / Next scene controls -->
+<div class="page-nav" aria-label="Previous and next scene">
+  <button class="page-nav-btn" id="scenePrev" aria-label="Previous scene">
+    <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+  <button class="page-nav-btn" id="sceneNext" aria-label="Next scene">
+    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+</div>
+
+<main id="main">
+
+  <!-- 1. LANDING HERO -->
+  <section id="hero" class="section hero-section" aria-label="Landing">
+    <div class="sky-layer sky-far"></div>
+    <div class="sky-layer sky-mid"></div>
+    <div class="moon-wrap" aria-hidden="true">
+      <img class="hero-rakhi" src="assets/rakhi/rakhi.png" alt="">
+    </div>
+    <div class="clouds" aria-hidden="true">
+      <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span>
+    </div>
+    <div class="lanterns-row" aria-hidden="true">
+      <span class="lantern l1"></span><span class="lantern l2"></span><span class="lantern l3"></span><span class="lantern l4"></span>
+    </div>
+    <div class="marigold-border" aria-hidden="true"></div>
+
+    <div class="hero-content reveal-up">
+      <p class="eyebrow">A little something, just for you</p>
+      <h1 class="hero-title">Happy Raksha Bandhan <span class="heart-beat">❤️</span></h1>
+      <p class="hero-sub">Some bonds never fade.<br>Distance only makes them stronger.</p>
+      <button class="cta-gold pulse" id="beginJourney">
+        <span>Begin the Journey</span>
+        <svg viewBox="0 0 24 24" class="cta-arrow"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+      </button>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><span></span><span class="scroll-hint-label">scroll · swipe · ↓</span></div>
+  </section>
+
+  <!-- 2. TIE THE RAKHI -->
+  <section id="tie" class="section tie-section" aria-label="Tie the Rakhi">
+    <div class="tie-ambience" aria-hidden="true">
+      <div class="tie-spotlight"></div>
+      <div class="tie-glitter"></div>
+      <span class="tie-petal tp1"></span><span class="tie-petal tp2"></span>
+      <span class="tie-petal tp3"></span><span class="tie-petal tp4"></span>
+      <span class="tie-petal tp5"></span><span class="tie-petal tp6"></span>
+    </div>
+
+    <div class="section-heading reveal-up">
+      <p class="eyebrow">Step One</p>
+      <h2>Tie the Rakhi</h2>
+      <p class="section-sub" id="tieInstruction">Drag the rakhi onto the wrist</p>
+    </div>
+
+    <div class="tie-stage">
+      <div class="hand-scene" aria-hidden="true">
+        <img class="hand-image" src="assets/hand/hand-right.png" alt="">
+        <img class="hand-image hand-tied-image" src="assets/hand/rakhi-tied-hand.png" alt="">
+        <div class="wrist-target" id="wristTarget"></div>
+      </div>
+
+      <div class="rakhi-stage-shell" id="rakhiStageShell">
+        <div class="celebration-glow" aria-hidden="true"></div>
+        <div class="sparkle-layer" id="sparkleLayer" aria-hidden="true"></div>
+        <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
+
+        <div class="rakhi-piece" id="rakhiPiece" tabindex="0" role="button" aria-label="Rakhi, drag or press Enter to tie">
+          <img class="rakhi-image rakhi-horizontal" src="assets/rakhi/rakhi-horizontal.png" alt="Horizontal rakhi">
+          <img class="rakhi-image rakhi-tied" src="assets/rakhi/rakhi-tied.png" alt="Tied rakhi">
+        </div>
+      </div>
+    </div>
+
+    <div class="tie-success" id="tieSuccess">
+      <div class="tie-success-card">
+        <p>✨ Rakhi tied with love ✨</p>
+        <div class="tie-divider"><span></span>♥<span></span></div>
+      </div>
+      <button class="cta-outline next-btn" data-next="ceremony">Continue</button>
+    </div>
+  </section>
+
+  <!-- 3. CEREMONY -->
+  <section id="ceremony" class="section ceremony-section" aria-label="Rakhi Ceremony">
+    <div class="section-heading reveal-up">
+      <p class="eyebrow">Step Two</p>
+      <h2>The Ceremony</h2>
+      <p class="section-sub">So many memories, one beautiful bond</p>
+    </div>
+
+    <div class="thali-stage" id="thaliStage">
+      <img class="thali-image" src="assets/thali/thali.png" alt="A ceremonial thali with diya, kumkum, rice, and flowers">
+      <div class="diya-aura" aria-hidden="true"></div>
+      <div class="ceremony-glow" id="ceremonyGlow"></div>
+    </div>
+
+    <button class="cta-gold" id="startCeremony">Begin the Ritual</button>
+
+    <p class="ceremony-quote" id="ceremonyQuote">"A sister's love ties itself around a brother's wrist, and a brother's protection ties itself around her heart."</p>
+  </section>
+
+  <!-- 4. STARRY MEMORIES -->
+  <section id="stars" class="section stars-section" aria-label="Starry Memories">
+    <div class="section-heading reveal-up light-on-dark">
+      <p class="eyebrow">Step Three</p>
+      <h2>Starry Memories</h2>
+      <p class="section-sub">Click on a star to relive a memory</p>
+    </div>
+    <canvas id="shootingStars"></canvas>
+    <canvas id="constellationCanvas"></canvas>
+    <div class="star-field" id="starField"></div>
+  </section>
+
+  <!-- 5. REASONS I'M GRATEFUL -->
+  <section id="grateful" class="section grateful-section" aria-label="Reasons I'm Grateful">
+    <div class="section-heading reveal-up light-on-dark">
+      <p class="eyebrow">Step Four</p>
+      <h2>Reasons I'm Grateful for You</h2>
+      <p class="section-sub">Open them one by one</p>
+    </div>
+    <div class="envelope-grid" id="envelopeGrid"></div>
+    <div class="grateful-progress">
+      <div class="progress-track"><div class="progress-fill" id="gratefulFill"></div></div>
+      <span id="gratefulCount">0 / 6 opened</span>
+    </div>
+  </section>
+
+  <!-- 6. HANDWRITTEN LETTER -->
+  <section id="letter" class="section letter-section" aria-label="Handwritten Letter">
+    <div class="section-heading reveal-up">
+      <p class="eyebrow">Step Five</p>
+      <h2>A Letter, Just for You</h2>
+    </div>
+
+    <div class="letter-stage">
+      <div class="letter-paper" id="letterPaper">
+        <svg class="wax-seal" viewBox="0 0 100 100" id="waxSeal">
+          <circle cx="50" cy="50" r="42"/>
+          <text x="50" y="58" text-anchor="middle">M</text>
+        </svg>
+        <p class="letter-text" id="letterText"></p>
+      </div>
+      <svg class="letter-rose" viewBox="0 0 100 200" aria-hidden="true">
+        <path class="rose-stem" d="M50 200 C50 140 40 120 50 90"/>
+        <ellipse class="rose-leaf" cx="35" cy="150" rx="14" ry="7" transform="rotate(-30 35 150)"/>
+        <circle class="rose-bloom" cx="50" cy="70" r="26"/>
+        <circle class="rose-bloom-in" cx="50" cy="70" r="15"/>
+      </svg>
+    </div>
+    <button class="cta-outline next-btn" data-next="finale">Continue to the Finale</button>
+  </section>
+
+  <!-- 7. FINAL CELEBRATION -->
+  <section id="finale" class="section finale-section" aria-label="Final Celebration">
+    <canvas id="fireworksCanvas"></canvas>
+    <div class="finale-lanterns" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="finale-content reveal-up">
+      <p class="finale-text">No matter where life takes us,<br>this thread will always remind us<br>that we'll never be far apart.</p>
+      <h2 class="finale-heading">❤️ Happy Raksha Bandhan ❤️</h2>
+      <button class="cta-gold" id="replayBtn">Replay the Journey</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- MUSIC PLAY / PAUSE BUTTON -->
+<div class="music-control">
+  <button id="playPause" class="play-btn" aria-label="Play Music">
+    <svg id="playPauseIcon" viewBox="0 0 24 24">
+      <path id="playIcon" d="M8 5v14l11-7z"></path>
+    </svg>
+  </button>
+</div>
+
+<!-- MEMORY MODAL -->
+<div class="modal-overlay" id="memoryModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div class="modal-photo" id="modalPhoto"></div>
+    <h3 id="modalTitle"></h3>
+    <p id="modalStory"></p>
+  </div>
+</div>
+
+<div class="sr-live" aria-live="polite" id="srLive"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
