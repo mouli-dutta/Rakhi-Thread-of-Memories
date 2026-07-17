@@ -444,6 +444,27 @@ function revealScene(sectionEl){
       positionCompletionUI();
     }
   });
+
+  function resetTie() {
+    placed = false;
+    dragging = false;
+    activePointerId = null;
+    if (frameId !== null) {
+      window.cancelAnimationFrame(frameId);
+      frameId = null;
+    }
+    rakhi.classList.remove('placed', 'celebrating', 'animating', 'tying', 'tying-left', 'tying-right', 'tightening', 'dragging', 'focused');
+    handScene.classList.remove('tied-hand', 'brightened');
+    target.classList.remove('dropped');
+    tieSection.classList.remove('rakhi-complete');
+    successBox.classList.remove('show');
+    instruction.textContent = 'Drag the rakhi onto the wrist';
+    sparkleLayer.innerHTML = '';
+    petalLayer.innerHTML = '';
+    alignTargetToHand();
+    placeAtStart();
+  }
+  Scenes.resetTie = resetTie;
 })();
 
 /* ---------------------------------------------------------
@@ -481,6 +502,13 @@ function revealScene(sectionEl){
     setTimeout(()=>{ glowEl.classList.add('show'); Audio_.playCeremonyChime(); }, 2600);
     setTimeout(()=>quote.classList.add('show'), 3400);
   });
+
+  Scenes.resetCeremony = function(){
+    btn.classList.remove('hide');
+    glowEl.classList.remove('show');
+    quote.classList.remove('show');
+    stage.querySelectorAll('.fx-particle').forEach(el => el.remove());
+  };
 })();
 
 /* ---------------------------------------------------------
@@ -632,6 +660,15 @@ function stopShootingStars(){
     startShootingStars();
     Audio_.startStarsAmbience();
   };
+
+  Scenes.resetStars = function(){
+    laidOut = false;
+    positions = [];
+    field.innerHTML = '';
+    if(canvas.width) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stopShootingStars();
+    closeModal();
+  };
 })();
 
 /* ---------------------------------------------------------
@@ -678,6 +715,16 @@ function stopShootingStars(){
     });
     grid.appendChild(env);
   });
+
+  Scenes.resetGrateful = function(){
+    opened = 0;
+    fill.style.width = '0%';
+    count.textContent = `0 / ${reasons.length} opened`;
+    grid.querySelectorAll('.envelope').forEach(env => {
+      env.classList.remove('open');
+      env.querySelectorAll('.mini-heart').forEach(h => h.remove());
+    });
+  };
 })();
 
 /* ---------------------------------------------------------
@@ -714,6 +761,13 @@ Your lil sis ❤️`;
     })();
   }
   Scenes.letterEnter = type;
+
+  Scenes.resetLetter = function(){
+    typed = false;
+    textEl.textContent = '';
+    seal.classList.remove('show');
+    Audio_.stopPencilLoop();
+  };
 })();
 
 /* ---------------------------------------------------------
@@ -891,8 +945,20 @@ Your lil sis ❤️`;
       if(idx>-1) goTo(idx);
     });
   });
+  function resetJourney(){
+    Scenes.resetTie && Scenes.resetTie();
+    Scenes.resetCeremony && Scenes.resetCeremony();
+    Scenes.resetStars && Scenes.resetStars();
+    Scenes.resetGrateful && Scenes.resetGrateful();
+    Scenes.resetLetter && Scenes.resetLetter();
+    Scenes.fireworksStop && Scenes.fireworksStop();
+  }
+
   document.getElementById('beginJourney').addEventListener('click', () => goTo(1));
-  document.getElementById('replayBtn').addEventListener('click', ()=>goTo(0));
+  document.getElementById('replayBtn').addEventListener('click', ()=>{
+    resetJourney();
+    goTo(0);
+  });
 
   // Wheel navigation (with cooldown so one gesture = one page)
   let wheelCooldown=false;
